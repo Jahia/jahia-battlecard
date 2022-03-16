@@ -1,2 +1,18 @@
+<jcnt = 'http://www.jahiacommunity.org/jahia/nt/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+
+[jcnt:battlecardMountPoint] > jnt:mountPoint
+
+[jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:mainResource orderable
+ - isJahiaSheet (boolean) = false autocreated
+ + * (jcnt:battlecardItem) = jcnt:battlecardItem
+
+[jcnt:battlecardItem] > jnt:content, jmix:list, mix:title, jmix:editorialContent orderable
+ + * (jcnt:keyValue) = jcnt:keyValue
+
+[jcnt:keyValue] > jnt:content, jmix:editorialContent
+ - key (string) i18n
+ - value (string) i18n
+

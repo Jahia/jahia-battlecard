@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
-   <modules jcr:primaryType="jnt:modules">
-      <jahia-battlecard j:dependencies="default"
-                        j:modulePriority="0"
-                        j:moduleType="module"
-                        j:title="Jahia Battlecard"
-                        jcr:primaryType="jnt:module">
-         <portlets jcr:primaryType="jnt:portletFolder"/>
-         <files jcr:primaryType="jnt:folder"/>
-         <contents jcr:primaryType="jnt:contentFolder"/>
-         <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
+    <modules jcr:primaryType="jnt:modules">
+        <jahia-battlecard j:dependencies="default external-provider"
+                          j:modulePriority="0"
+                          j:moduleType="module"
+                          j:title="Jahia Battlecard"
+                          jcr:primaryType="jnt:module">
+            <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder"/>
-         </templates>
-      </jahia-battlecard>
-   </modules>
+            <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
+                <files jcr:primaryType="jnt:folder"/>
+                <contents jcr:primaryType="jnt:contentFolder"/>
+            </templates>
+        </jahia-battlecard>
+    </modules>
+    <sites jcr:primaryType="jnt:virtualsitesFolder">
+        <systemsite jcr:primaryType="jnt:virtualsite">
+            <contents jcr:primaryType="jnt:contentList">
+                <battlecards jcr:primaryType="jnt:contentFolder"/>
+            </contents>
+        </systemsite>
+    </sites>
+    <mounts jcr:primaryType="jnt:mounts">
+        <battlecardMountPoint jcr:primaryType="jcnt:battlecardMountPoint"
+                              mountPoint="/sites/systemsite/contents/battlecards"/>
+    </mounts>
 </content>
