@@ -102,7 +102,9 @@ public class BattlecardProviderFactory implements ProviderFactory {
 
         try {
             provider.setKey(jcrNodeWrapper.getIdentifier());
-            provider.setMountPoint(jcrNodeWrapper.getProperty(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME).getNode().getPath());
+            String path = jcrNodeWrapper.getProperty(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME).getNode().getPath();
+            battlecardCacheManager.setOutputPath(path);
+            provider.setMountPoint(path);
             provider.setDataSource(battlecardDataSource);
             provider.setDynamicallyMounted(true);
             provider.setSessionFactory(JCRSessionFactory.getInstance());

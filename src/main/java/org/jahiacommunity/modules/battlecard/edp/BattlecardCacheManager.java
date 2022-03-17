@@ -22,6 +22,11 @@ public class BattlecardCacheManager {
     private static final String CACHE_KEY = "battlecard-cache";
 
     private Ehcache cache;
+    private String outputPath;
+
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
+    }
 
     @Activate
     private void onActivate() {
@@ -49,7 +54,10 @@ public class BattlecardCacheManager {
 
     public void flush() {
         if (cache != null) {
-            cache.removeAll();
+            CacheHelper.flushEhcacheByName(CACHE_KEY, true);
+        }
+        if (outputPath != null) {
+            CacheHelper.flushOutputCachesForPath(outputPath, true);
         }
     }
 

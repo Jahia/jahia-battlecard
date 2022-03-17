@@ -1,0 +1,13 @@
+{
+  "label": {
+    "contentActions": {
+      "3dotsFlushBattlecardCacheAction": "Flush Battlecard cache"
+    },
+    "graphql": {
+      "flushBattlecardCacheAction": {
+        "success": "Cache flushed.",
+        "error": "An error occured."
+      }
+    }
+  }
+}
