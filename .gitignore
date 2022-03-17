@@ -13,3 +13,5 @@ target
 
 # Jahia DX Studio
 repository.xml.generated
+
+*.bak

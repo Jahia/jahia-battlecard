@@ -61,11 +61,11 @@ public class BattlecardCacheManager {
         return (List<NodeValue>) CacheHelper.getObjectValue(cache, cacheKey);
     }
 
-    public void putSheetData(String sheet, Map<NodeValue, Map<String, String>> data) {
+    public void putSheetData(String sheet, Map<NodeValue, Map<NodeValue, String>> data) {
         cache.put(new Element(sheet, new ModuleClassLoaderAwareCacheEntry(data, CACHE_KEY)));
     }
 
-    public Map<NodeValue, Map<String, String>> getSheetData(String cacheKey) {
-        return (Map<NodeValue, Map<String, String>>) CacheHelper.getObjectValue(cache, cacheKey);
+    public Map<NodeValue, Map<NodeValue, String>> getSheetData(String cacheKey) {
+        return (Map<NodeValue, Map<NodeValue, String>>) CacheHelper.getObjectValue(cache, cacheKey);
     }
 }

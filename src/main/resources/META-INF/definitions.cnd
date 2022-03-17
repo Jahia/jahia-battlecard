@@ -6,13 +6,13 @@
 [jcnt:battlecardMountPoint] > jnt:mountPoint
 
 [jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:mainResource orderable
- - isJahiaSheet (boolean) = false autocreated
- + * (jcnt:battlecardItem) = jcnt:battlecardItem
+ - isMasterSheet (boolean) = false autocreated
+ + * (jcnt:battlecardCategory) = jcnt:battlecardCategory
 
-[jcnt:battlecardItem] > jnt:content, jmix:list, mix:title, jmix:editorialContent orderable
- + * (jcnt:keyValue) = jcnt:keyValue
+[jcnt:battlecardCategory] > jnt:content, jmix:list, mix:title, jmix:editorialContent orderable
+ + * (jcnt:battlecardKeyValue) = jcnt:battlecardKeyValue
 
-[jcnt:keyValue] > jnt:content, jmix:editorialContent
+[jcnt:battlecardKeyValue] > jnt:content, jmix:editorialContent
  - key (string) i18n
  - value (string) i18n
 

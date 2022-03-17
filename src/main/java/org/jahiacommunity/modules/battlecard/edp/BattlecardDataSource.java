@@ -3,9 +3,9 @@ package org.jahiacommunity.modules.battlecard.edp;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.external.ExternalData;
 import org.jahia.modules.external.ExternalDataSource;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahiacommunity.modules.battlecard.service.BattlecardMapper;
 import org.jahiacommunity.modules.battlecard.service.GoogleSheetService;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class BattlecardDataSource implements ExternalDataSource {
 
     private BattlecardCacheManager battlecardCacheManager;
     private GoogleSheetService googleSheetService;
+    private JCRTemplate jcrTemplate;
     private JahiaSitesService jahiaSitesService;
     private Set<String> languages;
 
@@ -41,6 +43,11 @@ public class BattlecardDataSource implements ExternalDataSource {
     }
 
     @Reference
+    private void setJcrTemplate(JCRTemplate jcrTemplate) {
+        this.jcrTemplate = jcrTemplate;
+    }
+
+    @Reference
     private void setJahiaSitesService(JahiaSitesService jahiaSitesService) {
         this.jahiaSitesService = jahiaSitesService;
     }
@@ -48,9 +55,11 @@ public class BattlecardDataSource implements ExternalDataSource {
     @Activate
     private void onActivate() {
         try {
-            languages = jahiaSitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY).getLanguages();
-        } catch (JahiaException e) {
-            logger.warn("", e);
+            languages = jcrTemplate.doExecuteWithSystemSession(systemSession ->
+                    jahiaSitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, systemSession).getLanguages());
+        } catch (RepositoryException e) {
+            logger.error("", e);
+            languages = Collections.emptySet();
         }
     }
 
@@ -81,22 +90,22 @@ public class BattlecardDataSource implements ExternalDataSource {
                 String sheetTitle = getSheets(path).stream().filter(sheet -> pathes[1].equals(sheet.getNodename())).findFirst()
                         .orElseThrow(() -> new PathNotFoundException(path))
                         .getTitle();
-                return BattlecardMapper.mapBattlecard(path, languages, sheetTitle, googleSheetService.isJahiaSheet(sheetTitle));
+                return BattlecardMapper.mapBattlecard(path, languages, sheetTitle, googleSheetService.isMasterSheet(sheetTitle));
             case 3:
                 // /<sheet>/<category>
-                return BattlecardMapper.mapBattlecardItem(path, languages, getSheetData(pathes[1]).entrySet().stream()
+                return BattlecardMapper.mapBattlecardCategory(path, languages, getSheetData(pathes[1]).entrySet().stream()
                         .filter(entry -> pathes[2].equals(entry.getKey().getNodename())).findFirst()
                         .orElseThrow(() -> new PathNotFoundException(path)).getKey().getTitle());
             case 4:
                 // /<sheet>/<category>/<keyValue-xxx>
                 int index = Integer.parseInt(StringUtils.substringAfter(pathes[3], BattlecardMapper.KEYVALUE_PREFIX));
-                Map.Entry<String, String> keyValue = getSheetData(pathes[1]).entrySet().stream()
+                Map.Entry<NodeValue, String> keyValue = getSheetData(pathes[1]).entrySet().stream()
                         .filter(entry -> pathes[2].equals(entry.getKey().getNodename())).findFirst()
                         .orElseThrow(() -> new PathNotFoundException(path))
                         .getValue().entrySet().stream()
                         .skip(index).limit(1).findAny()
                         .orElseThrow(() -> new PathNotFoundException(path));
-                return BattlecardMapper.mapKeyValue(path, languages, keyValue.getKey(), keyValue.getValue());
+                return BattlecardMapper.mapKeyValue(path, languages, keyValue.getKey().getTitle(), keyValue.getValue());
         }
         throw new PathNotFoundException(path);
     }
@@ -142,12 +151,10 @@ public class BattlecardDataSource implements ExternalDataSource {
         return sheets;
     }
 
-    private Map<NodeValue, Map<String, String>> getSheetData(String sheet) {
-        Map<NodeValue, Map<String, String>> data = battlecardCacheManager.getSheetData(sheet);
+    private Map<NodeValue, Map<NodeValue, String>> getSheetData(String sheet) {
+        Map<NodeValue, Map<NodeValue, String>> data = battlecardCacheManager.getSheetData(sheet);
         if (MapUtils.isEmpty(data)) {
-            data = BattlecardMapper.convertRowsToBattleCard(googleSheetService.getValues(sheet)).entrySet().stream()
-                    .collect(Collectors.toMap(entry -> new NodeValue(entry.getKey()),
-                            Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+            data = BattlecardMapper.convertRowsToBattleCard(googleSheetService.getValues(sheet));
             // cache sheet data
             battlecardCacheManager.putSheetData(sheet, data);
         }

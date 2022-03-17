@@ -4,7 +4,6 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -13,4 +12,9 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-${currentNode.properties['key'].string}: ${currentNode.properties['value'].string}
+<h3>${currentNode.properties['jcr:title'].string}</h3>
+<ul>
+    <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jcnt:battlecardKeyValue')}" var="keyValue">
+        <li><template:module node="${keyValue}" view="cm" editable="false"/></li>
+    </c:forEach>
+</ul>

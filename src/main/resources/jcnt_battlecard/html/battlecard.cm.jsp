@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <h1>${currentNode.properties['jcr:title'].string}</h1>
 <ul>
-    <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jcnt:battlecardItem')}" var="item">
-        <li><template:module node="${item}" view="cm" editable="false"/></li>
+    <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jcnt:battlecardCategory')}" var="category">
+        <li><template:module node="${category}" view="cm" editable="false"/></li>
     </c:forEach>
 </ul>

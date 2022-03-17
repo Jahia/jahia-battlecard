@@ -6,6 +6,8 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.ServiceAccountCredentials;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.tika.io.IOUtils;
 import org.jahia.utils.Patterns;
 import org.osgi.service.component.annotations.Activate;
@@ -28,20 +30,23 @@ public class GoogleSheetService {
     private static final String[] SCOPES = {"https://www.googleapis.com/auth/spreadsheets.readonly"};
 
     private String spreadsheetId;
-    private String jahiaSheetTitle;
+    private String masterSheet;
     private String[] excludedSheets;
     private Sheets service;
     private Spreadsheet spreadsheet;
 
     @Activate
-    private void onActivate(Map<String, ?> configuration) {
-        if (configuration.containsKey("credentials") && configuration.containsKey("projectId")
-                && configuration.containsKey("spreadsheetId") && configuration.containsKey("jahiaSheetTitle")
-                && configuration.containsKey("excludedSheets")) {
+    private void onActivate(Map<String, ?> configuration) throws PathNotFoundException {
+        if (MapUtils.isNotEmpty(configuration)
+                && configuration.containsKey("credentials") && StringUtils.isNotBlank((String) configuration.get("credentials"))
+                && configuration.containsKey("projectId") && StringUtils.isNotBlank((String) configuration.get("projectId"))
+                && configuration.containsKey("spreadsheetId") && StringUtils.isNotBlank((String) configuration.get("spreadsheetId"))
+                && configuration.containsKey("masterSheet") && StringUtils.isNotBlank((String) configuration.get("masterSheet"))
+                && configuration.containsKey("excludedSheets") && StringUtils.isNotBlank((String) configuration.get("excludedSheets"))) {
             String credentials = (String) Objects.requireNonNull(configuration.get("credentials"));
             String projectId = (String) Objects.requireNonNull(configuration.get("projectId"));
             spreadsheetId = (String) Objects.requireNonNull(configuration.get("spreadsheetId"));
-            jahiaSheetTitle = (String) Objects.requireNonNull(configuration.get("jahiaSheetTitle"));
+            masterSheet = (String) Objects.requireNonNull(configuration.get("masterSheet"));
             String sheets = (String) configuration.get("excludedSheets");
             if (sheets != null) {
                 sheets = sheets.replaceAll(" ", "");
@@ -101,12 +106,12 @@ public class GoogleSheetService {
         }
     }
 
-    public boolean isJahiaSheet(String sheet) {
+    public boolean isMasterSheet(String sheet) {
         try {
             validateService();
         } catch (PathNotFoundException e) {
             return false;
         }
-        return jahiaSheetTitle.equals(sheet);
+        return masterSheet.equals(sheet);
     }
 }

@@ -14,33 +14,31 @@ public final class BattlecardMapper {
     private static final Logger logger = LoggerFactory.getLogger(BattlecardMapper.class);
 
     private static final String BATTLECARD_NODETYPE = "jcnt:battlecard";
-    private static final String BATTLECARDITEM_NODETYPE = "jcnt:battlecardItem";
-    private static final String KEYVALUE_NODETYPE = "jcnt:keyValue";
+    private static final String BATTLECARDCATEGORY_NODETYPE = "jcnt:battlecardCategory";
+    private static final String KEYVALUE_NODETYPE = "jcnt:battlecardKeyValue";
     public static final String KEYVALUE_SEPARATOR = "-";
     public static final String KEYVALUE_PREFIX = "keyValue" + KEYVALUE_SEPARATOR;
     private static final String KEYVALUE_KEY_PROPERTY = "key";
     private static final String KEYVALUE_VALUE_PROPERTY = "value";
-    private static final String ISJAHIASHEET_PROPERTY = "isJahiaSheet";
+    private static final String ISMASTERSHEET_PROPERTY = "isMasterSheet";
     private static final int EDP_COLUMN = 3;
 
     public static ExternalData mapRootNode(String path) {
         return new ExternalData(path, path, "jnt:contentFolder", Collections.emptyMap());
     }
 
-    public static ExternalData mapBattlecard(String path, Set<String> languages, String title, boolean isJahiaSheet) {
+    public static ExternalData mapBattlecard(String path, Set<String> languages, String title, boolean isMasterSheet) {
         ExternalData externalData = new ExternalData(path, path, BATTLECARD_NODETYPE,
-                Collections.singletonMap(ISJAHIASHEET_PROPERTY, new String[]{Boolean.toString(isJahiaSheet)}));
+                Collections.singletonMap(ISMASTERSHEET_PROPERTY, new String[]{Boolean.toString(isMasterSheet)}));
         externalData.setI18nProperties(languages.stream().collect(
-                Collectors.toMap(language -> language,
-                        language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
+                Collectors.toMap(language -> language, language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
         return externalData;
     }
 
-    public static ExternalData mapBattlecardItem(String path, Set<String> languages, String title) {
-        ExternalData externalData = new ExternalData(path, path, BATTLECARDITEM_NODETYPE, Collections.emptyMap());
+    public static ExternalData mapBattlecardCategory(String path, Set<String> languages, String title) {
+        ExternalData externalData = new ExternalData(path, path, BATTLECARDCATEGORY_NODETYPE, Collections.emptyMap());
         externalData.setI18nProperties(languages.stream().collect(
-                Collectors.toMap(language -> language,
-                        language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
+                Collectors.toMap(language -> language, language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
         return externalData;
     }
 
@@ -49,32 +47,37 @@ public final class BattlecardMapper {
         Map<String, String[]> i18nProperties = new HashMap<>();
         i18nProperties.put(KEYVALUE_KEY_PROPERTY, new String[]{key});
         i18nProperties.put(KEYVALUE_VALUE_PROPERTY, new String[]{value});
-        externalData.setI18nProperties(languages.stream().collect(
-                Collectors.toMap(language -> language, language -> i18nProperties)));
+        externalData.setI18nProperties(languages.stream().collect(Collectors.toMap(language -> language, language -> i18nProperties)));
         return externalData;
     }
 
-    public static Map<String, Map<String, String>> convertRowsToBattleCard(List<List<Object>> rows) {
-        Map<String, Map<String, String>> data = new LinkedHashMap<>();
+    public static Map<NodeValue, Map<NodeValue, String>> convertRowsToBattleCard(List<List<Object>> rows) {
+        Map<NodeValue, Map<NodeValue, String>> data = new LinkedHashMap<>();
         String category = null;
-        String key;
+        NodeValue nodeCategory = null;
+        String key, value;
         for (List<Object> row : rows) {
             if (logger.isDebugEnabled()) {
                 logger.debug("{}}", row);
             }
 
-            if (row.size() > EDP_COLUMN && row.get(EDP_COLUMN) != null
-                    && BooleanUtils.toBoolean((String) row.get(EDP_COLUMN))) {
+            if (row.size() > EDP_COLUMN && row.get(EDP_COLUMN) != null && BooleanUtils.toBoolean((String) row.get(EDP_COLUMN))) {
                 if (row.get(0) != null && StringUtils.isNotBlank((String) row.get(0))) {
                     category = (String) row.get(0);
-                    data.put(category, new LinkedHashMap<>());
+                    nodeCategory = new NodeValue(category);
+                    data.put(nodeCategory, new LinkedHashMap<>());
                 } else if (category == null) {
-                    logger.warn("/!\\ Ignore row: {}", row);
+                    logger.warn("Ignore row: {}", row);
                     break;
                 }
 
                 key = (String) row.get(1);
-                data.get(category).put(StringUtils.isBlank(key) ? UUID.randomUUID().toString() : key, (String) row.get(2));
+                value = (String) row.get(2);
+                if (StringUtils.isNotBlank(key) || StringUtils.isNotBlank(value)) {
+                    data.get(nodeCategory).put(new NodeValue(key), value);
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("Ignore row with empty values: {}", row);
+                }
             }
         }
         return data;
