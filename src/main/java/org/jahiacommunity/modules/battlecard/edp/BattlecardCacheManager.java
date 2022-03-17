@@ -33,9 +33,8 @@ public class BattlecardCacheManager {
         CacheManager cacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
         cache = cacheManager.getCache(CACHE_KEY);
         if (cache == null) {
-            CacheConfiguration cacheConfiguration = new CacheConfiguration();
+            CacheConfiguration cacheConfiguration = cacheManager.getConfiguration().getDefaultCacheConfiguration().clone();
             cacheConfiguration.setName(CACHE_KEY);
-            cacheConfiguration.setEternal(true);
             // Create a new cache with the configuration
             cache = new Cache(cacheConfiguration);
             cache.setName(CACHE_KEY);
@@ -58,6 +57,7 @@ public class BattlecardCacheManager {
         }
         if (outputPath != null) {
             CacheHelper.flushOutputCachesForPath(outputPath, true);
+            CacheHelper.sendCacheFlushCommandToCluster(CacheHelper.CMD_FLUSH_PATH, outputPath);
         }
     }
 
