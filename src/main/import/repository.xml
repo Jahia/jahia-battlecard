@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <jahia-battlecard j:dependencies="default external-provider graphql-dxm-provider"
-                          j:modulePriority="0"
-                          j:moduleType="module"
-                          j:title="Jahia Battlecard"
-                          jcr:primaryType="jnt:module">
+        <jahia-battlecard jcr:primaryType="jnt:module" j:dependencies="default external-provider graphql-dxm-provider"
+                          j:modulePriority="0" j:moduleType="module" j:title="Jahia Battlecard">
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder"/>
             <contents jcr:primaryType="jnt:contentFolder"/>
@@ -18,7 +15,9 @@
     <sites jcr:primaryType="jnt:virtualsitesFolder">
         <systemsite jcr:primaryType="jnt:virtualsite">
             <contents jcr:primaryType="jnt:contentList">
-                <battlecards jcr:primaryType="jnt:contentFolder"/>
+                <battlecards jcr:primaryType="jnt:contentFolder">
+                    <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title="Battlecards"/>
+                </battlecards>
             </contents>
         </systemsite>
     </sites>

@@ -6,6 +6,7 @@ window.jahia.uiExtender.registry.add('callback', 'training', {
         window.jahia.uiExtender.registry.add('action', '3dotsFlushBattlecardCacheAction', {
             buttonLabel: 'jahia-battlecard:label.contentActions.3dotsFlushBattlecardCacheAction',
             buttonIcon: window.jahia.moonstone.toIconComponent('Cancel'),
+            requiredPermission: 'flushBatteclardCacheAction',
             targets: ['contentActions:99'],
             onClick: () => {
                 fetch(`${contextJsParameters.contextPath}/modules/graphql`, {
