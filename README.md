@@ -43,4 +43,5 @@ projectId=<Google Project ID>
 spreadsheetId=<Google Spreadsheet ID>
 masterSheet=<Sheet title tagged as master sheet>
 excludedSheets=<Sheets title excluded from the EDP mountpoint, comma separated without space>
+siteKey=<siteKey>
 ```

@@ -12,17 +12,4 @@
             </templates>
         </jahia-battlecard>
     </modules>
-    <sites jcr:primaryType="jnt:virtualsitesFolder">
-        <systemsite jcr:primaryType="jnt:virtualsite">
-            <contents jcr:primaryType="jnt:contentList">
-                <battlecards jcr:primaryType="jnt:contentFolder">
-                    <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title="Battlecards"/>
-                </battlecards>
-            </contents>
-        </systemsite>
-    </sites>
-    <mounts jcr:primaryType="jnt:mounts">
-        <battlecardMountPoint jcr:primaryType="jcnt:battlecardMountPoint"
-                              mountPoint="/sites/systemsite/contents/battlecards"/>
-    </mounts>
 </content>

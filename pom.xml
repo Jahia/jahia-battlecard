@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.1.1.0</version>
+        <version>8.1.0.0</version>
     </parent>
     <groupId>org.jahiacommunity.modules</groupId>
     <artifactId>jahia-battlecard</artifactId>
@@ -36,7 +36,7 @@
 
     <properties>
         <jahia-depends>default,external-provider,graphql-dxm-provider</jahia-depends>
-        <external-provider.version>4.3.0</external-provider.version>
+        <external-provider.version>4.2.0</external-provider.version>
         <graphql-dxm-provider.version>2.8.0</graphql-dxm-provider.version>
         <hazelcast.version>3.12.10</hazelcast.version>
     </properties>
@@ -83,6 +83,14 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>biz.aQute.bnd</groupId>
+                        <artifactId>biz.aQute.bndlib</artifactId>
+                        <version>6.1.0</version>
+                    </dependency>
+                </dependencies>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
