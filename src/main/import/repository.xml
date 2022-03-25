@@ -8,7 +8,51 @@
             <contents jcr:primaryType="jnt:contentFolder"/>
             <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder"/>
-                <contents jcr:primaryType="jnt:contentFolder"/>
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <battlecard-factory j:mountPointType="jcnt:battlecardMountPoint" j:templateName="battlecard-factory"
+                                        jcr:primaryType="jcnt:battlecardMountPointFactoryPage">
+                        <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation"
+                                          jcr:title="Battlecard Factory"/>
+                    </battlecard-factory>
+                </contents>
+                <base j:hiddenTemplate="false" j:view="serverSettings" jcr:primaryType="jnt:template">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                      jcr:title="base"/>
+                    <battlecard-factory j:applyOn="jcnt:battlecardMountPointFactoryPage" j:defaultTemplate="true"
+                                        j:hiddenTemplate="false" j:requiredPermissionNames="adminMountPoints"
+                                        jcr:primaryType="jnt:contentTemplate">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                          jcr:title="battlecard-factory"/>
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <battlecard-mount-point-factory-form jcr:primaryType="jcnt:battlecardMountPointFactoryForm">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="battlecard mount point factory form"/>
+                            </battlecard-mount-point-factory-form>
+                        </pagecontent>
+                    </battlecard-factory>
+                </base>
+                <base-jahia-anthracite j:hiddenTemplate="false" j:view="settingsBootstrap3GoogleMaterialStyle"
+                                       jcr:primaryType="jnt:template">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                      jcr:title="base-jahia-anthracite"/>
+                    <battlecard-factory-jahia-anthracite j:applyOn="jcnt:battlecardMountPointFactoryPage"
+                                                         j:defaultTemplate="true" j:hiddenTemplate="false"
+                                                         j:requiredPermissionNames="adminMountPoints"
+                                                         j:view="settingsBootstrap3GoogleMaterialStyle"
+                                                         jcr:primaryType="jnt:contentTemplate">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation"
+                                          jcr:title="battlecard-factory-jahia-anthracite"/>
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <battlecard-mount-point-factory-form-jahia-anthracite
+                                    jcr:primaryType="jcnt:battlecardMountPointFactoryForm">
+                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title"
+                                                  jcr:primaryType="jnt:translation"
+                                                  jcr:title="battlecard mount point factory form"/>
+                            </battlecard-mount-point-factory-form-jahia-anthracite>
+                        </pagecontent>
+                    </battlecard-factory-jahia-anthracite>
+                </base-jahia-anthracite>
             </templates>
         </jahia-battlecard>
     </modules>

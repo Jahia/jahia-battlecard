@@ -1,0 +1,21 @@
+package org.jahiacommunity.modules.battlecard.edp
+
+// list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.JCRContentUtils
+import org.slf4j.Logger
+
+// declare any global variables here
+global User user
+global Service service
+global Logger logger
+global JCRContentUtils jcrUtils
+
+rule "Delete mountpoint background jobs"
+    salience 50
+    when
+        A node is deleted
+            - the node has the type jcnt:battlecardMountPoint
+    then
+>       org.jahiacommunity.modules.battlecard.edp.BattlecardProviderFactory.deleteMountPoint(node.getIdentifier());
+end

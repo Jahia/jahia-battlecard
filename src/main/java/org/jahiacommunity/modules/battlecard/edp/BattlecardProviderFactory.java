@@ -1,86 +1,54 @@
 package org.jahiacommunity.modules.battlecard.edp;
 
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.modules.external.ExternalContentStoreProvider;
-import org.jahia.modules.external.ExternalProviderInitializerService;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.osgi.service.component.annotations.Activate;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.quartz.CronTrigger;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.text.ParseException;
+import java.util.*;
 
-@Component(service = ProviderFactory.class, immediate = true)
+@Component(service = {BattlecardProviderFactory.class, ProviderFactory.class}, immediate = true)
 public class BattlecardProviderFactory implements ProviderFactory {
     private static final Logger logger = LoggerFactory.getLogger(BattlecardProviderFactory.class);
 
     public static final String NODETYPE = "jcnt:battlecardMountPoint";
+    private static final String PROPERTY_CREDENTIALS = "credentials";
+    private static final String PROPERTY_PROJECTID = "projectId";
+    private static final String PROPERTY_SPREADSHEETID = "spreadsheetId";
+    private static final String PROPERTY_MASTERSHEET = "masterSheet";
+    private static final String PROPERTY_EXCLUDEDSHEETS = "excludedSheets";
+    private static final String PROPERTY_CRONEXPRESSION = "cronExpression";
 
-    private static final List<String> EXTENDABLE_TYPES = Collections.singletonList(NODETYPE);
-    private static final List<String> OVERRIDABLE_ITEMS = Collections.singletonList("*.*");
-    private static final List<String> NONOVERRIDABLE_ITEMS = Collections.emptyList();
+    private SchedulerService schedulerService;
+    private final Map<String, BattlecardDataSource> battlecardDataSources;
+    private final Map<String, JobDetail> jobDetails;
 
-    private ExternalContentStoreProvider provider;
-    private BattlecardDataSource battlecardDataSource;
-    private BattlecardCacheManager battlecardCacheManager;
-
-    /**
-     * Core services
-     */
-    private JahiaUserManagerService userManagerService;
-    private JahiaGroupManagerService groupManagerService;
-    private JahiaSitesService sitesService;
-    private JCRStoreService jcrStoreService;
-    private JCRSessionFactory sessionFactory;
-    private ExternalProviderInitializerService externalProviderInitializerService;
-
-    @Reference
-    private void setUserManagerService(JahiaUserManagerService userManagerService) {
-        this.userManagerService = userManagerService;
+    public BattlecardProviderFactory() {
+        battlecardDataSources = new HashMap<>();
+        jobDetails = new HashMap<>();
     }
 
     @Reference
-    private void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
-        this.groupManagerService = groupManagerService;
-    }
-
-    @Reference
-    private void setSitesService(JahiaSitesService sitesService) {
-        this.sitesService = sitesService;
-    }
-
-    @Reference
-    private void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
-    }
-
-    @Reference
-    private void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    @Reference
-    private void setExternalProviderInitializerService(ExternalProviderInitializerService externalProviderInitializerService) {
-        this.externalProviderInitializerService = externalProviderInitializerService;
-    }
-
-    @Reference(service = BattlecardDataSource.class)
-    private void setStoreDataSource(BattlecardDataSource battlecardDataSource) {
-        this.battlecardDataSource = battlecardDataSource;
-    }
-
-    @Reference
-    private void setBattlecardCacheManager(BattlecardCacheManager battlecardCacheManager) {
-        this.battlecardCacheManager = battlecardCacheManager;
+    private void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
     @Override
@@ -90,43 +58,89 @@ public class BattlecardProviderFactory implements ProviderFactory {
 
     @Override
     public JCRStoreProvider mountProvider(JCRNodeWrapper jcrNodeWrapper) throws RepositoryException {
-        if (provider == null) {
-            provider = new ExternalContentStoreProvider();
-            provider.setUserManagerService(userManagerService);
-            provider.setGroupManagerService(groupManagerService);
-            provider.setSitesService(sitesService);
-            provider.setService(jcrStoreService);
-            provider.setSessionFactory(sessionFactory);
-            provider.setExternalProviderInitializerService(externalProviderInitializerService);
-        }
-
         try {
-            provider.setKey(jcrNodeWrapper.getIdentifier());
-            String path = jcrNodeWrapper.getProperty(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME).getNode().getPath();
-            battlecardCacheManager.setOutputPath(path);
-            provider.setMountPoint(path);
-            provider.setDataSource(battlecardDataSource);
-            provider.setDynamicallyMounted(true);
-            provider.setSessionFactory(JCRSessionFactory.getInstance());
-            provider.setExtendableTypes(EXTENDABLE_TYPES);
-            provider.setOverridableItems(OVERRIDABLE_ITEMS);
-            provider.setNonOverridableItems(NONOVERRIDABLE_ITEMS);
+            ExternalContentStoreProvider provider = createExternalDataProviderCacheAndJob(jcrNodeWrapper);
             //Start the provider
             provider.start(true);
             logger.info("Started the provider");
-        } catch (JahiaInitializationException e) {
+            return provider;
+        } catch (Exception e) {
             throw new RepositoryException(e);
         }
-        return provider;
-    }
-
-    @Activate
-    private void onActivate() {
-        battlecardCacheManager.flush();
     }
 
     @Deactivate
     private void onDeactivate() {
-        provider = null;
+        battlecardDataSources.forEach((key, battlecardDataSource) -> battlecardDataSource.disconnect());
+        jobDetails.forEach((key, jobDetail) -> stopJobDetail(jobDetail));
+    }
+
+    private void stopJobDetail(JobDetail jobDetail) {
+        try {
+            if (!schedulerService.getAllJobs(jobDetail.getGroup()).isEmpty() && SettingsBean.getInstance().isProcessingServer()) {
+                schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+            }
+        } catch (SchedulerException e) {
+            logger.error("", e);
+        }
+    }
+
+    private ExternalContentStoreProvider createExternalDataProviderCacheAndJob(JCRNodeWrapper mountPointNode) throws RepositoryException, SchedulerException, ParseException, GeneralSecurityException, IOException {
+        ExternalContentStoreProvider provider = (ExternalContentStoreProvider) SpringContextSingleton.getBean("ExternalStoreProviderPrototype");
+
+        // create datasource
+        BattlecardDataSource oldBattlecardDataSource = BundleUtils.getOsgiService(BattlecardDataSource.class,
+                "(" + Constants.SERVICE_PID + "=" + mountPointNode.getIdentifier() + ")");
+        if (oldBattlecardDataSource != null) {
+            oldBattlecardDataSource.disconnect();
+        }
+        String mountPointPath = mountPointNode.getProperty(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME).getNode().getPath();
+        BattlecardDataSource battlecardDataSource = new BattlecardDataSource(mountPointNode.getIdentifier(), mountPointPath,
+                mountPointNode.getProperty(PROPERTY_CREDENTIALS).getString(),
+                mountPointNode.getProperty(PROPERTY_PROJECTID).getString(),
+                mountPointNode.getProperty(PROPERTY_SPREADSHEETID).getString(),
+                mountPointNode.getProperty(PROPERTY_MASTERSHEET).getString(),
+                Arrays.stream(mountPointNode.getProperty(PROPERTY_EXCLUDEDSHEETS).getValues()).map(value -> {
+                    try {
+                        return value.getString();
+                    } catch (RepositoryException e) {
+                        logger.warn("", e);
+                        return null;
+                    }
+                }).filter(Objects::nonNull).toArray(String[]::new));
+        battlecardDataSource.setServiceRegistration(FrameworkUtil.getBundle(BattlecardDataSource.class).getBundleContext()
+                .registerService(BattlecardDataSource.class.getName(), battlecardDataSource,
+                        new Hashtable<>(Collections.singletonMap(Constants.SERVICE_PID, mountPointNode.getIdentifier()))));
+        battlecardDataSources.put(mountPointNode.getIdentifier(), battlecardDataSource);
+
+        // create the flush cache job
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Flush battlecard with a cron Job", FlushBattlecardJob.class);
+        jobDetail.getJobDataMap().put(Constants.SERVICE_PID, mountPointNode.getIdentifier());
+        if (schedulerService.getAllJobs(jobDetail.getGroup()).isEmpty() && SettingsBean.getInstance().isProcessingServer()) {
+            schedulerService.getScheduler().scheduleJob(jobDetail,
+                    new CronTrigger("flushBattlecardJob_cronTrigger", jobDetail.getGroup(),
+                            mountPointNode.getProperty(PROPERTY_CRONEXPRESSION).getString()));
+        }
+        jobDetails.put(mountPointNode.getIdentifier(), jobDetail);
+
+        // set the provider
+        provider.setKey(mountPointNode.getIdentifier());
+        provider.setMountPoint(mountPointPath);
+        provider.setDataSource(battlecardDataSource);
+        provider.setDynamicallyMounted(true);
+        provider.setSessionFactory(JCRSessionFactory.getInstance());
+
+        return provider;
+    }
+
+    public static void deleteMountPoint(String mountPointNodeIdentifier) {
+        logger.info("Delete or unmount mount point: {}", mountPointNodeIdentifier);
+        BattlecardProviderFactory battlecardProviderFactory = BundleUtils.getOsgiService(BattlecardProviderFactory.class, null);
+        if (battlecardProviderFactory != null) {
+            battlecardProviderFactory.battlecardDataSources.get(mountPointNodeIdentifier).disconnect();
+            battlecardProviderFactory.battlecardDataSources.remove(mountPointNodeIdentifier);
+            battlecardProviderFactory.stopJobDetail(battlecardProviderFactory.jobDetails.get(mountPointNodeIdentifier));
+            battlecardProviderFactory.jobDetails.remove(mountPointNodeIdentifier);
+        }
     }
 }

@@ -1,6 +1,6 @@
 window.jahia.i18n.loadNamespaces('jahia-battlecard');
 
-window.jahia.uiExtender.registry.add('callback', 'training', {
+window.jahia.uiExtender.registry.add('callback', 'battlecard', {
     targets: ['jahiaApp-init:90'],
     callback: () => {
         window.jahia.uiExtender.registry.add('action', '3dotsFlushBattlecardCacheAction', {
@@ -8,16 +8,18 @@ window.jahia.uiExtender.registry.add('callback', 'training', {
             buttonIcon: window.jahia.moonstone.toIconComponent('Cancel'),
             requiredPermission: 'flushBatteclardCacheAction',
             targets: ['contentActions:99'],
-            onClick: () => {
+            onClick: ({path}) => {
                 fetch(`${contextJsParameters.contextPath}/modules/graphql`, {
                     method: 'POST',
-                    body: JSON.stringify({query: `{
+                    body: JSON.stringify({
+                        query: `query flushBatteclardCache($mountPointNodePath:String!) {
                       admin {
-                        flushBattlecardCache
+                        flushBattlecardCache(mountPointNodePath: $mountPointNodePath)
                       }
-                    }`})
+                    }`,
+                        variables: {mountPointNodePath: path}
+                    })
                 }).then(response => response.json()).then(data => {
-                    console.log(data);
                     if (data.data?.admin?.flushBattlecardCache) {
                         alert(window.jahia.i18n.t('jahia-battlecard:label.graphql.flushBattlecardCacheAction.success'));
                     } else {

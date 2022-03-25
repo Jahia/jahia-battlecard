@@ -10,26 +10,19 @@ import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.cache.ModuleClassLoaderAwareCacheEntry;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahiacommunity.modules.battlecard.service.NodeValue;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 
 import java.util.List;
 import java.util.Map;
 
-@Component(service = BattlecardCacheManager.class, immediate = true)
 public class BattlecardCacheManager {
     private static final String CACHE_KEY = "battlecard-cache";
 
     private Ehcache cache;
-    private String outputPath;
+    private final String outputPath;
 
-    public void setOutputPath(String outputPath) {
+    public BattlecardCacheManager(String outputPath) {
         this.outputPath = outputPath;
-    }
 
-    @Activate
-    private void onActivate() {
         CacheManager cacheManager = ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider")).getCacheManager();
         cache = cacheManager.getCache(CACHE_KEY);
         if (cache == null) {
@@ -40,15 +33,10 @@ public class BattlecardCacheManager {
             cache.setName(CACHE_KEY);
             // Cache name has been set now we can initialize it by putting it in the manager.
             // Only Cache manager is initializing caches.
-            cacheManager.addCacheIfAbsent(cache);
+            cache = cacheManager.addCacheIfAbsent(cache);
         } else {
             cache.removeAll();
         }
-    }
-
-    @Deactivate
-    private void onDeactivate() {
-        flush();
     }
 
     public void flush() {
