@@ -95,7 +95,7 @@ angular.module('battlecardMountPoint', [])
                                 localPath: properties.mountPoint.refNode.path
                             };
                         } else {
-                            $.snackbar({content: `Data not found`, style: 'error'});
+                            $.snackbar({content: 'Data not found', style: 'error'});
                         }
                     } catch (e) {
                         throw new Error(e);
@@ -125,7 +125,7 @@ angular.module('battlecardMountPoint', [])
                 if (response.data && response.data.data && response.data.data.jcr && response.data.data.jcr.mutateNode) {
                     $scope.cancel();
                 } else {
-                    $.snackbar({content: `Data not found`, style: 'error'});
+                    $.snackbar({content: 'Data not found', style: 'error'});
                 }
             }).catch(e => $.snackbar({content: `Error ${e.message}`, style: 'error'}));
         };
@@ -155,14 +155,14 @@ angular.module('battlecardMountPoint', [])
                             if (response.data && response.data.data && response.data.data.jcr && response.data.data.jcr.addNode) {
                                 $scope.cancel();
                             } else {
-                                $.snackbar({content: `Data not found`, style: 'error'});
+                                $.snackbar({content: 'Data not found', style: 'error'});
                             }
                         }).catch(e => $.snackbar({content: `Error ${e.message}`, style: 'error'}));
                     } else {
                         updateMountPointProperties(identifier, mountPointIdentifier);
                     }
                 } else {
-                    $.snackbar({content: `Data not found`, style: 'error'});
+                    $.snackbar({content: 'Data not found', style: 'error'});
                 }
             }).catch(e => $.snackbar({content: `Error ${e.message}`, style: 'error'}));
         };

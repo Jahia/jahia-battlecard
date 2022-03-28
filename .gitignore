@@ -14,4 +14,9 @@ target
 # Jahia DX Studio
 repository.xml.generated
 
+# NodeJS
+node_modules
+node
+
+src/main/resources/javascript/apps
 *.bak
