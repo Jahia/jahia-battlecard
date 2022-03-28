@@ -158,7 +158,7 @@ public class BattlecardDataSource implements ExternalDataSource, ExternalDataSou
     }
 
     private List<NodeValue> getSheets(String path) {
-        List<NodeValue> sheets = battlecardCacheManager.getSheets(path);
+        List<NodeValue> sheets = battlecardCacheManager.getSheets(googleSheetService.getSpreadsheetId() + path);
         if (CollectionUtils.isEmpty(sheets)) {
             sheets = googleSheetService.getSheets().stream().map(NodeValue::new).collect(Collectors.toCollection(LinkedList::new));
             // cache sheets
@@ -168,7 +168,7 @@ public class BattlecardDataSource implements ExternalDataSource, ExternalDataSou
     }
 
     private Map<NodeValue, Map<NodeValue, String>> getSheetData(String sheet) {
-        Map<NodeValue, Map<NodeValue, String>> data = battlecardCacheManager.getSheetData(sheet);
+        Map<NodeValue, Map<NodeValue, String>> data = battlecardCacheManager.getSheetData(googleSheetService.getSpreadsheetId() + sheet);
         if (MapUtils.isEmpty(data)) {
             data = BattlecardMapper.convertRowsToBattleCard(googleSheetService.getValues(sheet));
             // cache sheet data
