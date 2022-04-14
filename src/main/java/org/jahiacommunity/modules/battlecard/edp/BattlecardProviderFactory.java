@@ -137,10 +137,14 @@ public class BattlecardProviderFactory implements ProviderFactory {
         logger.info("Delete or unmount mount point: {}", mountPointNodeIdentifier);
         BattlecardProviderFactory battlecardProviderFactory = BundleUtils.getOsgiService(BattlecardProviderFactory.class, null);
         if (battlecardProviderFactory != null) {
-            battlecardProviderFactory.battlecardDataSources.get(mountPointNodeIdentifier).disconnect();
-            battlecardProviderFactory.battlecardDataSources.remove(mountPointNodeIdentifier);
-            battlecardProviderFactory.stopJobDetail(battlecardProviderFactory.jobDetails.get(mountPointNodeIdentifier));
-            battlecardProviderFactory.jobDetails.remove(mountPointNodeIdentifier);
+            if (battlecardProviderFactory.battlecardDataSources.containsKey(mountPointNodeIdentifier)) {
+                battlecardProviderFactory.battlecardDataSources.get(mountPointNodeIdentifier).disconnect();
+                battlecardProviderFactory.battlecardDataSources.remove(mountPointNodeIdentifier);
+            }
+            if (battlecardProviderFactory.jobDetails.containsKey(mountPointNodeIdentifier)) {
+                battlecardProviderFactory.stopJobDetail(battlecardProviderFactory.jobDetails.get(mountPointNodeIdentifier));
+                battlecardProviderFactory.jobDetails.remove(mountPointNodeIdentifier);
+            }
         }
     }
 }
