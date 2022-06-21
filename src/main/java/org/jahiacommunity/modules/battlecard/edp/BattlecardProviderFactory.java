@@ -33,7 +33,6 @@ public class BattlecardProviderFactory implements ProviderFactory {
     private static final String PROPERTY_CREDENTIALS = "credentials";
     private static final String PROPERTY_PROJECTID = "projectId";
     private static final String PROPERTY_SPREADSHEETID = "spreadsheetId";
-    private static final String PROPERTY_MASTERSHEET = "masterSheet";
     private static final String PROPERTY_EXCLUDEDSHEETS = "excludedSheets";
     private static final String PROPERTY_CRONEXPRESSION = "cronExpression";
 
@@ -99,7 +98,6 @@ public class BattlecardProviderFactory implements ProviderFactory {
                 mountPointNode.getProperty(PROPERTY_CREDENTIALS).getString(),
                 mountPointNode.getProperty(PROPERTY_PROJECTID).getString(),
                 mountPointNode.getProperty(PROPERTY_SPREADSHEETID).getString(),
-                mountPointNode.getProperty(PROPERTY_MASTERSHEET).getString(),
                 Arrays.stream(mountPointNode.getProperty(PROPERTY_EXCLUDEDSHEETS).getValues()).map(value -> {
                     try {
                         return value.getString();

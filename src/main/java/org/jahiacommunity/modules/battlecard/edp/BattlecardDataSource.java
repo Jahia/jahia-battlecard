@@ -32,10 +32,10 @@ public class BattlecardDataSource implements ExternalDataSource, ExternalDataSou
     private Set<String> languages;
     private ServiceRegistration<?> serviceRegistration;
 
-    public BattlecardDataSource(String mountPointNodeIdentifier, String mountPointPath, String credentials, String projectId, String spreadsheetId, String masterSheet, String[] excludedSheets) throws GeneralSecurityException, IOException {
+    public BattlecardDataSource(String mountPointNodeIdentifier, String mountPointPath, String credentials, String projectId, String spreadsheetId, String[] excludedSheets) throws GeneralSecurityException, IOException {
         this.mountPointNodeIdentifier = mountPointNodeIdentifier;
         battlecardCacheManager = new BattlecardCacheManager(mountPointPath);
-        googleSheetService = new GoogleSheetService(credentials, projectId, spreadsheetId, masterSheet, excludedSheets);
+        googleSheetService = new GoogleSheetService(credentials, projectId, spreadsheetId, excludedSheets);
     }
 
     public void setServiceRegistration(ServiceRegistration<?> serviceRegistration) {
@@ -106,7 +106,7 @@ public class BattlecardDataSource implements ExternalDataSource, ExternalDataSou
                 String sheetTitle = getSheets(path).stream().filter(sheet -> pathes[1].equals(sheet.getNodename())).findFirst()
                         .orElseThrow(() -> new PathNotFoundException(path))
                         .getTitle();
-                return BattlecardMapper.mapBattlecard(path, languages, sheetTitle, googleSheetService.isMasterSheet(sheetTitle));
+                return BattlecardMapper.mapBattlecard(path, languages, sheetTitle);
             case 3:
                 // /<sheet>/<category>
                 return BattlecardMapper.mapBattlecardCategory(path, languages, getSheetData(pathes[1]).entrySet().stream()

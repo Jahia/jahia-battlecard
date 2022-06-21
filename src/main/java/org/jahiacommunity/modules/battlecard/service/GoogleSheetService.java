@@ -27,14 +27,12 @@ public class GoogleSheetService {
     private static final String[] SCOPES = {"https://www.googleapis.com/auth/spreadsheets.readonly"};
 
     private final String spreadsheetId;
-    private final String masterSheet;
     private final String[] excludedSheets;
     private final Sheets service;
     private final Spreadsheet spreadsheet;
 
-    public GoogleSheetService(String credentials, String projectId, String spreadsheetId, String masterSheet, String[] excludedSheets) throws GeneralSecurityException, IOException {
+    public GoogleSheetService(String credentials, String projectId, String spreadsheetId, String[] excludedSheets) throws GeneralSecurityException, IOException {
         this.spreadsheetId = spreadsheetId;
-        this.masterSheet = masterSheet;
         this.excludedSheets = excludedSheets;
 
         ServiceAccountCredentials sourceCredentials = (ServiceAccountCredentials) ServiceAccountCredentials.fromStream(IOUtils.toInputStream(credentials, StandardCharsets.UTF_8)).createScoped(Arrays.asList(SCOPES));
@@ -73,14 +71,5 @@ public class GoogleSheetService {
             // Do nothing
             return Collections.emptyList();
         }
-    }
-
-    public boolean isMasterSheet(String sheet) {
-        try {
-            validateService();
-        } catch (PathNotFoundException e) {
-            return false;
-        }
-        return masterSheet.equals(sheet);
     }
 }

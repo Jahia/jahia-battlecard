@@ -7,7 +7,6 @@
  - credentials (string) hidden indexed=no mandatory
  - projectId (string) mandatory
  - spreadsheetId (string) mandatory
- - masterSheet (string) mandatory
  - excludedSheets (string) multiple
  - cronExpression (string) = '0 0 0 * * ?' autocreated mandatory
 
@@ -15,11 +14,15 @@
 
 [jcnt:battlecardMountPointFactoryForm] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
-[jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:mainResource orderable
- - isMasterSheet (boolean) = false autocreated
+[jcnt:battlecardFight] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent, jmix:mainResource
+ - masterBattlecard (weakreference) mandatory < 'jcnt:battlecard'
+ - battlecard2 (weakreference) mandatory < 'jcnt:battlecard'
+
+[jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:editorialContent, jmix:mainResource orderable
  + * (jcnt:battlecardCategory) = jcnt:battlecardCategory
 
 [jcnt:battlecardCategory] > jnt:content, jmix:list, mix:title, jmix:editorialContent orderable
+ - isMasterCategory (boolean) = false autocreated
  + * (jcnt:battlecardKeyValue) = jcnt:battlecardKeyValue
 
 [jcnt:battlecardKeyValue] > jnt:content, jmix:editorialContent

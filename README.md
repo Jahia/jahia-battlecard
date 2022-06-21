@@ -8,16 +8,20 @@ This repository is a sample code based on **EDP** (External Data Provider) imple
 * What is a battlecard ?
   * A battlecard is a succession of key:values grouped by category
 ```
-[jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:mainResource orderable
-- isMasterSheet (boolean) = false autocreated
-+ * (jcnt:battlecardCategory) = jcnt:battlecardCategory
+[jcnt:battlecardFight] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent, jmix:mainResource
+ - masterBattlecard (weakreference) mandatory < 'jcnt:battlecard'
+ - battlecard2 (weakreference) mandatory < 'jcnt:battlecard'
+
+[jcnt:battlecard] > jnt:content, jmix:list, mix:title, jmix:structuredContent, jmix:editorialContent, jmix:mainResource orderable
+ + * (jcnt:battlecardCategory) = jcnt:battlecardCategory
 
 [jcnt:battlecardCategory] > jnt:content, jmix:list, mix:title, jmix:editorialContent orderable
-+ * (jcnt:battlecardKeyValue) = jcnt:battlecardKeyValue
+ - isMasterCategory (boolean) = false autocreated
+ + * (jcnt:battlecardKeyValue) = jcnt:battlecardKeyValue
 
 [jcnt:battlecardKeyValue] > jnt:content, jmix:editorialContent
-- key (string) i18n
-- value (string) i18n
+ - key (string) i18n
+ - value (string) i18n
 ```
 * Where can I find the battlecards ?
   * All battlecards are mounted in a specific content folder under */sites/sytemsite/contents/battlecards* just after the deployment of the module.
@@ -36,12 +40,12 @@ An UI extension adds a new action in [3dots menu](https://academy.jahia.com/docu
   - Download the credentials
 
 ## How to setup Battlecard configuration
-Update the OSGI configuration: *org.jahiacommunity.modules.battlecard.service.GoogleSheetService.cfg*
+We can set up your configuration in the UI Administration > Modules and Extensions > Mount points
 ```
-credentials=<Google Service Account JSON credentials>
-projectId=<Google Project ID>
-spreadsheetId=<Google Spreadsheet ID>
-masterSheet=<Sheet title tagged as master sheet>
-excludedSheets=<Sheets title excluded from the EDP mountpoint, comma separated without space>
-siteKey=<siteKey>
+Credentials=<Google Service Account JSON credentials>
+Google Cloud Project ID=<Google Project ID>
+Google Spreadsheet ID=<Google Spreadsheet ID>
+Google Sheets excluded=<Sheets title excluded from the EDP mountpoint, comma separated without space>
+Mount path=<JCR Mount path>
+Cron Expression to flush cache=<Cron expression>
 ```

@@ -24,7 +24,6 @@ angular.module('battlecardMountPoint', [])
                           credentials: property(name: "credentials") { value }
                           projectId: property(name: "projectId") { value }
                           spreadsheetId: property(name: "spreadsheetId") { value }
-                          masterSheet: property(name: "masterSheet") { value }
                           excludedSheets: property(name: "excludedSheets") { values }
                           cronExpression: property(name: "cronExpression") { value }
                           mountPoint: property(name: "mountPoint") { refNode { path } }
@@ -38,7 +37,7 @@ angular.module('battlecardMountPoint', [])
                                         }
                                       }
                                     }`;
-        const gqlCreateMountPoint = `mutation createMountPoint($name:String!, $credentials: String!, $projectId: String!, $spreadsheetId: String!, $masterSheet: String!, $excludedSheets: [String!], $cronExpression: String!, $mountPoint: String!) {
+        const gqlCreateMountPoint = `mutation createMountPoint($name:String!, $credentials: String!, $projectId: String!, $spreadsheetId: String!, $excludedSheets: [String!], $cronExpression: String!, $mountPoint: String!) {
                               jcr(workspace: EDIT) {
                                 addNode(
                                   parentPathOrId: "/mounts",
@@ -48,7 +47,6 @@ angular.module('battlecardMountPoint', [])
                                     {name: "credentials", value: $credentials},
                                     {name: "projectId", value: $projectId},
                                     {name: "spreadsheetId", value: $spreadsheetId},
-                                    {name: "masterSheet", value: $masterSheet},
                                     {name: "excludedSheets", values: $excludedSheets},
                                     {name: "cronExpression", value: $cronExpression},
                                     {name: "mountPoint", value: $mountPoint}
@@ -58,13 +56,12 @@ angular.module('battlecardMountPoint', [])
                                 }
                               }
                             }`;
-        const gqlEditMountPointProperties = `mutation editMountPoint($id:String!, $credentials: String!, $projectId: String!, $spreadsheetId: String!, $masterSheet: String!, $excludedSheets: [String!], $cronExpression: String!, $mountPoint: String!) {
+        const gqlEditMountPointProperties = `mutation editMountPoint($id:String!, $credentials: String!, $projectId: String!, $spreadsheetId: String!, $excludedSheets: [String!], $cronExpression: String!, $mountPoint: String!) {
                                   jcr(workspace: EDIT) {
                                     mutateNode(pathOrId: $id) {
                                       credentials: mutateProperty(name: "credentials") { setValue(value: $credentials, type: STRING) }
                                       projectId: mutateProperty(name: "projectId") { setValue(value: $projectId, type: STRING) }
                                       spreadsheetId: mutateProperty(name: "spreadsheetId") { setValue(value: $spreadsheetId, type: STRING) }
-                                      masterSheet: mutateProperty(name: "masterSheet") { setValue(value: $masterSheet, type: STRING) }
                                       excludedSheets: mutateProperty(name: "excludedSheets") { setValues(values: $excludedSheets, type: STRING) }
                                       cronExpression: mutateProperty(name: "cronExpression") { setValue(value: $cronExpression, type: STRING) }
                                       mountPoint: mutateProperty(name: "mountPoint") { setValue(value: $mountPoint, type: WEAKREFERENCE) }
@@ -89,7 +86,6 @@ angular.module('battlecardMountPoint', [])
                                 credentials: properties.credentials.value,
                                 projectId: properties.projectId.value,
                                 spreadsheetId: properties.spreadsheetId.value,
-                                masterSheet: properties.masterSheet.value,
                                 excludedSheets: properties.excludedSheets.values,
                                 cronExpression: properties.cronExpression.value,
                                 localPath: properties.mountPoint.refNode.path
@@ -116,7 +112,6 @@ angular.module('battlecardMountPoint', [])
                     credentials: $scope.mountPoint.credentials,
                     projectId: $scope.mountPoint.projectId,
                     spreadsheetId: $scope.mountPoint.spreadsheetId,
-                    masterSheet: $scope.mountPoint.masterSheet,
                     excludeSheetts: $scope.mountPoint.excludeSheetts,
                     cronExpression: $scope.mountPoint.cronExpression,
                     mountPoint: mountPointIdentifier
@@ -146,7 +141,6 @@ angular.module('battlecardMountPoint', [])
                                 credentials: $scope.mountPoint.credentials,
                                 projectId: $scope.mountPoint.projectId,
                                 spreadsheetId: $scope.mountPoint.spreadsheetId,
-                                masterSheet: $scope.mountPoint.masterSheet,
                                 excludedSheets: $scope.mountPoint.excludedSheets.split(','),
                                 cronExpression: $scope.mountPoint.cronExpression,
                                 mountPoint: mountPointIdentifier

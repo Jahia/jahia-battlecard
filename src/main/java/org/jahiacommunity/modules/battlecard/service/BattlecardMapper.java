@@ -16,29 +16,32 @@ public final class BattlecardMapper {
     private static final String BATTLECARD_NODETYPE = "jcnt:battlecard";
     private static final String BATTLECARDCATEGORY_NODETYPE = "jcnt:battlecardCategory";
     private static final String KEYVALUE_NODETYPE = "jcnt:battlecardKeyValue";
-    public static final String KEYVALUE_SEPARATOR = "-";
-    public static final String KEYVALUE_PREFIX = "keyValue" + KEYVALUE_SEPARATOR;
+    public static final String KEYVALUE_PREFIX = "keyValue-";
     private static final String KEYVALUE_KEY_PROPERTY = "key";
     private static final String KEYVALUE_VALUE_PROPERTY = "value";
-    private static final String ISMASTERSHEET_PROPERTY = "isMasterSheet";
+    private static final String ISMASTERCATEGORY_PROPERTY = "isMasterCategory";
+    private static final String ISMASTERCATEGORY_DISCRIMINATOR = "*";
     private static final int EDP_COLUMN = 3;
 
     public static ExternalData mapRootNode(String path) {
         return new ExternalData(path, path, "jnt:contentFolder", Collections.emptyMap());
     }
 
-    public static ExternalData mapBattlecard(String path, Set<String> languages, String title, boolean isMasterSheet) {
-        ExternalData externalData = new ExternalData(path, path, BATTLECARD_NODETYPE,
-                Collections.singletonMap(ISMASTERSHEET_PROPERTY, new String[]{Boolean.toString(isMasterSheet)}));
+    public static ExternalData mapBattlecard(String path, Set<String> languages, String title) {
+        ExternalData externalData = new ExternalData(path, path, BATTLECARD_NODETYPE, Collections.emptyMap());
         externalData.setI18nProperties(languages.stream().collect(
                 Collectors.toMap(language -> language, language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
         return externalData;
     }
 
     public static ExternalData mapBattlecardCategory(String path, Set<String> languages, String title) {
-        ExternalData externalData = new ExternalData(path, path, BATTLECARDCATEGORY_NODETYPE, Collections.emptyMap());
+        ExternalData externalData = new ExternalData(path, path, BATTLECARDCATEGORY_NODETYPE,
+                Collections.singletonMap(ISMASTERCATEGORY_PROPERTY,
+                        new String[]{Boolean.toString(StringUtils.startsWith(title, ISMASTERCATEGORY_DISCRIMINATOR))}));
         externalData.setI18nProperties(languages.stream().collect(
-                Collectors.toMap(language -> language, language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{title}))));
+                Collectors.toMap(language -> language, language -> Collections.singletonMap(Constants.JCR_TITLE, new String[]{
+                        StringUtils.startsWith(title, ISMASTERCATEGORY_DISCRIMINATOR) ? StringUtils.substringAfter(title, ISMASTERCATEGORY_DISCRIMINATOR)
+                                : title}))));
         return externalData;
     }
 

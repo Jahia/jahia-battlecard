@@ -45,50 +45,43 @@
                 <form name="pimForm" method="post" class="form">
                     <fieldset title="local">
                         <div class="row">
-                            <div class="form-group label-floating col-md-12">
+                            <div class="form-group label-floating col-md-4">
                                 <label for="name" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.name"/> <span style="color:red">*</span></label>
                                 <input id="name" ng-model="mountPoint.name" class="form-control" required="required"
                                        ng-readonly="isEditing"/>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group label-floating col-md-12">
-                                <label for="credentials" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.credentials"/> <span style="color:red">*</span></label>
-                                <textarea id="credentials" ng-model="mountPoint.credentials" class="form-control" required="required" rows="5"></textarea>
+                            <div class="form-group label-floating col-md-4">
+                                <label for="localPath" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.localPath"/> <span style="color:
+                                red">*</span></label>
+                                <input id="localPath" ng-model="mountPoint.localPath" class="form-control" required="required"/>
+                            </div>
+                            <div class="form-group label-floating col-md-4">
+                                <label for="cronExpression" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.cronExpression"/> <span style="color:
+                                red">*</span></label>
+                                <input id="cronExpression" ng-model="mountPoint.cronExpression" class="form-control" required="required"/>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group label-floating col-md-6">
+                            <div class="form-group label-floating col-md-4">
                                 <label for="projectId" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.projectId"/> <span style="color:
                                 red">*</span></label>
                                 <input id="projectId" ng-model="mountPoint.projectId" class="form-control" required="required"/>
                             </div>
-                            <div class="form-group label-floating col-md-6">
+                            <div class="form-group label-floating col-md-4">
                                 <label for="spreadsheetId" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.spreadsheetId"/> <span style="color:
                                 red">*</span></label>
                                 <input id="spreadsheetId" ng-model="mountPoint.spreadsheetId" class="form-control" required="required"/>
                             </div>
-                            <div class="form-group label-floating col-md-6">
-                                <label for="masterSheet" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.masterSheet"/> <span style="color:
-                                red">*</span></label>
-                                <input id="masterSheet" ng-model="mountPoint.masterSheet" class="form-control" required="required"/>
-                            </div>
-                            <div class="form-group label-floating col-md-6">
+                            <div class="form-group label-floating col-md-4">
                                 <label for="excludedSheets" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.excludedSheets"/> <span style="color:
                                 red">*</span></label>
                                 <input id="excludedSheets" ng-model="mountPoint.excludedSheets" class="form-control" required="required"/>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group label-floating col-md-6">
-                                <label for="localPath" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.localPath"/> <span style="color:
-                                red">*</span></label>
-                                <input id="localPath" ng-model="mountPoint.localPath" class="form-control" required="required"/>
-                            </div>
-                            <div class="form-group label-floating col-md-6">
-                                <label for="cronExpression" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.cronExpression"/> <span style="color:
-                                red">*</span></label>
-                                <input id="cronExpression" ng-model="mountPoint.cronExpression" class="form-control" required="required"/>
+                            <div class="form-group label-floating col-md-12">
+                                <label for="credentials" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.credentials"/> <span style="color:red">*</span></label>
+                                <textarea id="credentials" ng-model="mountPoint.credentials" class="form-control" required="required" rows="5"></textarea>
                             </div>
                         </div>
                     </fieldset>
