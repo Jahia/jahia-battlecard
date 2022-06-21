@@ -16,8 +16,6 @@
 
 <c:set var="masterBattlecard" value="${currentNode.properties['masterBattlecard'].node}"/>
 <c:set var="battlecard2" value="${currentNode.properties['battlecard2'].node}"/>
-<template:addCacheDependency node="${masterBattlecard}"/>
-<template:addCacheDependency node="${battlecard2}"/>
 
 <div class="bluebg">
     <div class="container">
@@ -31,8 +29,6 @@
                 <c:if test="${not category1.properties['isMasterCategory'].boolean}">
 
                     <jcr:node var="category2" path="${battlecard2.path}/${category1.name}"/>
-                    <template:addCacheDependency node="${category1}"/>
-                    <template:addCacheDependency node="${category2}"/>
 
                     <div>
                         <div class="d-flex battlecard-section-sticky">
@@ -42,8 +38,6 @@
                         <c:forEach items="${jcr:getChildrenOfType(category1, 'jcnt:battlecardKeyValue')}"
                                    var="keyValue1">
                             <jcr:node var="keyValue2" path="${category2.path}/${keyValue1.name}"/>
-                            <template:addCacheDependency node="${keyValue1}"/>
-                            <template:addCacheDependency node="${keyValue2}"/>
 
                             <jcr:nodeProperty node="${keyValue1}" name="key" var="key1"/>
                             <jcr:nodeProperty node="${keyValue1}" name="value" var="value1"/>
@@ -68,7 +62,6 @@
 
             <c:forEach items="${jcr:getChildrenOfType(masterBattlecard, 'jcnt:battlecardCategory')}"
                        var="masterCategory">
-                <template:addCacheDependency node="${masterCategory}"/>
 
                 <c:if test="${masterCategory.properties['isMasterCategory'].boolean}">
                     <div class="simplebox">
@@ -76,7 +69,6 @@
                         <ul>
                             <c:forEach items="${jcr:getChildrenOfType(masterCategory, 'jcnt:battlecardKeyValue')}"
                                        var="keyValue">
-                                <template:addCacheDependency node="${keyValue}"/>
                                 <jcr:nodeProperty node="${keyValue}" name="key" var="key"/>
                                 <jcr:nodeProperty node="${keyValue}" name="value" var="value"/>
                                 <li><c:if test="${not empty key && key != ''}">${key.string}: </c:if>
