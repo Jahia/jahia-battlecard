@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -45,13 +46,14 @@
                             <jcr:nodeProperty node="${keyValue2}" name="value" var="value2"/>
 
                             <div class="battlecard-row d-flex">
+                                <c:set var="NEW_LINE" value="<%= \"\n\" %>"/>
                                 <div class="battlecard-col">
                                     <dt><c:if test="${not empty key1 && key1 != ''}">${key1.string}: </c:if></dt>
-                                    <dd>${value1.string}</dd>
+                                    <dd>${fn:replace(value1.string, NEW_LINE, '<br/>')}</dd>
                                 </div>
                                 <div class="battlecard-col">
                                     <dt><c:if test="${not empty key2 && key2 != ''}">${key2.string}: </c:if></dt>
-                                    <dd>${value2.string}</dd>
+                                    <dd>${fn:replace(value2.string, NEW_LINE, '<br/>')}</dd>
                                 </div>
                             </div>
                         </c:forEach>
@@ -62,7 +64,6 @@
 
             <c:forEach items="${jcr:getChildrenOfType(masterBattlecard, 'jcnt:battlecardCategory')}"
                        var="masterCategory">
-
                 <c:if test="${masterCategory.properties['isMasterCategory'].boolean}">
                     <div class="simplebox">
                         <h2>${masterCategory.properties['jcr:title'].string}</h2>
