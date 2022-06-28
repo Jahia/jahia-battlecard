@@ -88,7 +88,7 @@ angular.module('battlecardMountPoint', [])
                                 spreadsheetId: properties.spreadsheetId.value,
                                 excludedSheets: properties.excludedSheets.values,
                                 cronExpression: properties.cronExpression.value,
-                                localPath: properties.mountPoint.refNode.path
+                                localPath: properties.mountPoint.refNode?.path
                             };
                         } else {
                             $.snackbar({content: 'Data not found', style: 'error'});
@@ -112,7 +112,7 @@ angular.module('battlecardMountPoint', [])
                     credentials: $scope.mountPoint.credentials,
                     projectId: $scope.mountPoint.projectId,
                     spreadsheetId: $scope.mountPoint.spreadsheetId,
-                    excludeSheetts: $scope.mountPoint.excludeSheetts,
+                    excludedSheets: $scope.mountPoint.excludedSheets,
                     cronExpression: $scope.mountPoint.cronExpression,
                     mountPoint: mountPointIdentifier
                 }

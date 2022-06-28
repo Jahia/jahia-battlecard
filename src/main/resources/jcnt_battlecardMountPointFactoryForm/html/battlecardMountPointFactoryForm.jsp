@@ -81,7 +81,7 @@
                         <div class="row">
                             <div class="form-group label-floating col-md-12">
                                 <label for="credentials" class="control-label"><fmt:message key="jcnt_battlecardMountPoint.credentials"/> <span style="color:red">*</span></label>
-                                <textarea id="credentials" ng-model="mountPoint.credentials" class="form-control" required="required" rows="5"></textarea>
+                                <textarea id="credentials" ng-model="mountPoint.credentials" class="form-control" required="required" rows="20"></textarea>
                             </div>
                         </div>
                     </fieldset>

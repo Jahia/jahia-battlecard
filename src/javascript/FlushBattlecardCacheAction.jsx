@@ -7,7 +7,7 @@ export const FlushBattlecardCacheAction = ({path, render: Render, ...otherProps}
 
     const hasPermission = useNodeChecks({path}, {
         requiredPermission: ['flushBatteclardCacheAction'],
-        showOnNodeTypes: ['jcnt:battlecardMountPoint', 'jcnt:battlecard', 'jcnt:battlecardCategory', 'jcnt:battlecardKeyValue']
+        showOnNodeTypes: ['jcnt:battlecard', 'jcnt:battlecardCategory', 'jcnt:battlecardKeyValue']
     });
 
     if (!hasPermission || hasPermission.loading || !hasPermission.checksResult) {
@@ -21,12 +21,12 @@ export const FlushBattlecardCacheAction = ({path, render: Render, ...otherProps}
                            const response = await fetch(`${contextJsParameters.contextPath}/modules/graphql`, {
                                method: 'POST',
                                body: JSON.stringify({
-                                   query: `query flushBatteclardCache($mountPointNodePath:String!) {
+                                   query: `query flushBatteclardCache($path:String!) {
                                               admin {
-                                                flushBattlecardCache(mountPointNodePath: $mountPointNodePath)
+                                                flushBattlecardCache(path: $path)
                                               }
                                             }`,
-                                   variables: {mountPointNodePath: path}
+                                   variables: {path}
                                })
                            });
                            const data = await response.json();
