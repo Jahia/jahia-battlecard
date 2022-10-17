@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<h1>${currentNode.properties['jcr:title'].string}</h1>
+<h2>${currentNode.properties['jcr:title'].string}</h2>
 <ul>
     <c:forEach items="${jcr:getChildrenOfType(currentNode, 'jcnt:battlecardCategory')}" var="category">
         <li><template:module node="${category}" view="hidden" editable="false"/></li>

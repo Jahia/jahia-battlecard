@@ -1,43 +1,5 @@
-.document-content ul.fa-ul li:before {
-  background: none;
-}
-
-.simplebox {
-  -webkit-transition: box-shadow .25s ease, -webkit-transform .25s ease;
-  transition: box-shadow .25s ease, -webkit-transform .25s ease;
-  transition: box-shadow .25s ease, transform .25s ease;
-  transition: box-shadow .25s ease, transform .25s ease, -webkit-transform .25s ease;
-}
-
-.simplebox:hover,
-.simplebox:focus {
-  box-shadow: 0 1rem 2.5rem rgba(22, 28, 45, 0.1), 0 0.5rem 1rem -0.75rem rgba(22, 28, 45, 0.1) !important;
-  -webkit-transform: translate3d(0, -3px, 0);
-  transform: translate3d(0, -3px, 0);
-}
-
-body {
-  overflow: inherit;
-}
-
-.battlecard-title-sticky {
-  position: sticky;
-  top: 0;
-
-  /* border-bottom: 1px solid #eee; */
-
-  /* background: #f6fafd; */
-  background: #fff;
-  z-index: 1;
-}
-
-.battlecard-section-sticky {
-  position: sticky;
-  top: 75px;
-  background: #fff;
-  margin-bottom: 32px;
-  border-bottom: 1px solid #eee;
-  z-index: 1;
+.battlecard {
+  padding-top: 32px
 }
 
 .d-flex {
@@ -71,4 +33,11 @@ dd:empty::after {
 .battlecard-col + .battlecard-col {
   margin-left: 24px;
   margin-right: 0;
+}
+
+.battlecard h4 {
+  padding-bottom: 0;
+  color: #00a1e4;
+  height: 80px;
+  line-height: 80px;
 }
