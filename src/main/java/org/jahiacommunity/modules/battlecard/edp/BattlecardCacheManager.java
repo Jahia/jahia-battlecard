@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class BattlecardCacheManager {
     private static final String CACHE_KEY = "battlecard-cache";
+    private static final String MODULE_NAME = "jahia-battlecard";
 
     private Ehcache cache;
     private final String outputPath;
@@ -50,7 +51,7 @@ public class BattlecardCacheManager {
     }
 
     public void putSheets(String cacheKey, List<NodeValue> sheets) {
-        cache.put(new Element(cacheKey, new ModuleClassLoaderAwareCacheEntry(sheets, CACHE_KEY)));
+        cache.put(new Element(cacheKey, new ModuleClassLoaderAwareCacheEntry(sheets, MODULE_NAME)));
     }
 
     public List<NodeValue> getSheets(String cacheKey) {
@@ -58,7 +59,7 @@ public class BattlecardCacheManager {
     }
 
     public void putSheetData(String sheet, Map<NodeValue, Map<NodeValue, String>> data) {
-        cache.put(new Element(sheet, new ModuleClassLoaderAwareCacheEntry(data, CACHE_KEY)));
+        cache.put(new Element(sheet, new ModuleClassLoaderAwareCacheEntry(data, MODULE_NAME)));
     }
 
     public Map<NodeValue, Map<NodeValue, String>> getSheetData(String cacheKey) {
